@@ -1,0 +1,189 @@
+
+import pandas as pd
+from pathlib import Path
+
+reviews = [
+    # Quality
+    ("Product ki quality bahut achhi hai", "quality", "positive"),
+    ("Quality ekdum bekar hai", "quality", "negative"),
+    ("Product ki quality average hai", "quality", "neutral"),
+    ("Build quality zabardast hai", "quality", "positive"),
+    ("Material bahut cheap lagta hai", "quality", "negative"),
+    ("Product normal quality ka hai", "quality", "neutral"),
+    ("Product premium feel deta hai", "quality", "positive"),
+    ("Product do din mein toot gaya", "quality", "negative"),
+    ("Quality theek-thaak hai", "quality", "neutral"),
+    ("Is product ka material solid hai", "quality", "positive"),
+    ("Product bilkul durable nahi hai", "quality", "negative"),
+    ("Material na achha na bura hai", "quality", "neutral"),
+    ("Product expected se bhi better hai", "quality", "positive"),
+    ("Finishing bahut kharab hai", "quality", "negative"),
+    ("Finishing average hai", "quality", "neutral"),
+
+    # Delivery
+    ("Delivery bahut fast thi", "delivery", "positive"),
+    ("Mera order bahut late aaya", "delivery", "negative"),
+    ("Delivery time normal tha", "delivery", "neutral"),
+    ("Order expected date se pehle aa gaya", "delivery", "positive"),
+    ("Parcel abhi tak nahi mila", "delivery", "negative"),
+    ("Order time par deliver hua", "delivery", "neutral"),
+    ("Same day delivery mil gayi", "delivery", "positive"),
+    ("Delivery wale ne bahut delay kiya", "delivery", "negative"),
+    ("Delivery ka experience average tha", "delivery", "neutral"),
+    ("Parcel safely deliver hua", "delivery", "positive"),
+    ("Mera order lost ho gaya", "delivery", "negative"),
+    ("Shipping normal thi", "delivery", "neutral"),
+    ("Order jaldi receive ho gaya", "delivery", "positive"),
+    ("Teen din late delivery hui", "delivery", "negative"),
+    ("Delivery theek thi", "delivery", "neutral"),
+
+    # Price
+    ("Price ke hisaab se product mast hai", "price", "positive"),
+    ("Itne paise mein worth nahi hai", "price", "negative"),
+    ("Price average hai", "price", "neutral"),
+    ("Budget mein best product hai", "price", "positive"),
+    ("Bahut expensive product hai", "price", "negative"),
+    ("Price reasonable lagti hai", "price", "neutral"),
+    ("Paise vasool product hai", "price", "positive"),
+    ("Iski price bilkul justified nahi hai", "price", "negative"),
+    ("Price normal range mein hai", "price", "neutral"),
+    ("Affordable aur useful hai", "price", "positive"),
+    ("Same product bahut sasta mil raha hai", "price", "negative"),
+    ("Price theek-thaak hai", "price", "neutral"),
+    ("Quality ke according price sahi hai", "price", "positive"),
+    ("Itna paisa waste ho gaya", "price", "negative"),
+    ("Cost expected ke aas-paas hai", "price", "neutral"),
+
+    # Customer service
+    ("Customer support ne jaldi help ki", "customer_service", "positive"),
+    ("Customer care ne koi help nahi ki", "customer_service", "negative"),
+    ("Support response normal tha", "customer_service", "neutral"),
+    ("Staff bahut polite tha", "customer_service", "positive"),
+    ("Service bahut disappointing thi", "customer_service", "negative"),
+    ("Customer service average thi", "customer_service", "neutral"),
+    ("Meri problem turant solve ho gayi", "customer_service", "positive"),
+    ("Support team reply hi nahi karti", "customer_service", "negative"),
+    ("Response time theek tha", "customer_service", "neutral"),
+    ("Agent ne clearly explain kiya", "customer_service", "positive"),
+    ("Refund ke liye bahut pareshan kiya", "customer_service", "negative"),
+    ("Support experience ordinary tha", "customer_service", "neutral"),
+    ("Team ne achhe se guide kiya", "customer_service", "positive"),
+    ("Staff ka behaviour rude tha", "customer_service", "negative"),
+    ("Service na achhi na buri thi", "customer_service", "neutral"),
+
+    # Battery
+    ("Battery backup zabardast hai", "battery", "positive"),
+    ("Battery jaldi khatam ho jaati hai", "battery", "negative"),
+    ("Battery backup theek-thaak hai", "battery", "neutral"),
+    ("Ek charge mein pura din chalti hai", "battery", "positive"),
+    ("Battery bahut jaldi drain hoti hai", "battery", "negative"),
+    ("Battery performance average hai", "battery", "neutral"),
+    ("Charging fast aur battery long lasting hai", "battery", "positive"),
+    ("Battery charge hi nahi tikta", "battery", "negative"),
+    ("Battery backup normal hai", "battery", "neutral"),
+    ("Battery life kaafi achhi hai", "battery", "positive"),
+    ("Phone ki battery faulty hai", "battery", "negative"),
+    ("Battery theek perform karti hai", "battery", "neutral"),
+    ("Power backup impressive hai", "battery", "positive"),
+    ("Battery overheating karti hai", "battery", "negative"),
+    ("Charging speed average hai", "battery", "neutral"),
+
+    # Camera
+    ("Camera ka result kamaal ka hai", "camera", "positive"),
+    ("Photos blur aati hain", "camera", "negative"),
+    ("Camera average quality ka hai", "camera", "neutral"),
+    ("Low light mein bhi photos achhi hain", "camera", "positive"),
+    ("Camera ki quality bahut bekar hai", "camera", "negative"),
+    ("Camera normal photos leta hai", "camera", "neutral"),
+    ("Selfies bahut clear aati hain", "camera", "positive"),
+    ("Camera focus sahi nahi karta", "camera", "negative"),
+    ("Camera performance okay hai", "camera", "neutral"),
+    ("Video recording smooth hai", "camera", "positive"),
+    ("Photos mein noise bahut hai", "camera", "negative"),
+    ("Image quality average hai", "camera", "neutral"),
+    ("Portrait mode excellent hai", "camera", "positive"),
+    ("Camera colours unnatural hain", "camera", "negative"),
+    ("Camera mere liye theek hai", "camera", "neutral"),
+
+    # Packaging
+    ("Packing achhi thi, product safe aaya", "packaging", "positive"),
+    ("Box damaged tha aur packing kharab thi", "packaging", "negative"),
+    ("Packing normal thi", "packaging", "neutral"),
+    ("Product securely packed tha", "packaging", "positive"),
+    ("Package phata hua mila", "packaging", "negative"),
+    ("Packaging average thi", "packaging", "neutral"),
+    ("Box clean aur sealed tha", "packaging", "positive"),
+    ("Packing ki wajah se product damage hua", "packaging", "negative"),
+    ("Packaging theek-thaak thi", "packaging", "neutral"),
+    ("Wrapping kaafi professional thi", "packaging", "positive"),
+    ("Box mein accessories missing thi", "packaging", "negative"),
+    ("Package simple tha", "packaging", "neutral"),
+    ("Packaging strong aur safe thi", "packaging", "positive"),
+    ("Parcel ka box completely crushed tha", "packaging", "negative"),
+    ("Packing ordinary thi", "packaging", "neutral"),
+
+    # Usability
+    ("App use karna bahut easy hai", "usability", "positive"),
+    ("App baar baar crash hoti hai", "usability", "negative"),
+    ("App ka experience normal hai", "usability", "neutral"),
+    ("Interface simple aur user friendly hai", "usability", "positive"),
+    ("App bahut slow chalti hai", "usability", "negative"),
+    ("Navigation average hai", "usability", "neutral"),
+    ("Features samajhna bahut easy hai", "usability", "positive"),
+    ("Login karte waqt app hang hoti hai", "usability", "negative"),
+    ("App ka interface theek hai", "usability", "neutral"),
+    ("App smoothly kaam karti hai", "usability", "positive"),
+    ("Use karna confusing hai", "usability", "negative"),
+    ("Experience ordinary hai", "usability", "neutral"),
+    ("Setup karna simple tha", "usability", "positive"),
+    ("Software mein bahut bugs hain", "usability", "negative"),
+    ("App manageable hai", "usability", "neutral"),
+
+    # General mixed-language reviews
+    ("Overall product awesome hai", "quality", "positive"),
+    ("Honestly product bilkul disappointing hai", "quality", "negative"),
+    ("Overall experience okay tha", "quality", "neutral"),
+    ("I really like this product", "quality", "positive"),
+    ("Very bad experience, not worth it", "quality", "negative"),
+    ("It is an average product", "quality", "neutral"),
+    ("Performance kaafi impressive hai", "quality", "positive"),
+    ("I am not happy with this purchase", "quality", "negative"),
+    ("Product does the basic job", "quality", "neutral"),
+    ("Superb product, totally satisfied", "quality", "positive"),
+    ("Worst purchase ever, very unhappy", "quality", "negative"),
+    ("Nothing special, just okay", "quality", "neutral"),
+    ("Value for money and good quality", "price", "positive"),
+    ("Waste of money, poor performance", "price", "negative"),
+    ("It is fine for everyday use", "quality", "neutral"),
+    ("Amazing experience, highly recommended", "quality", "positive"),
+    ("Not good, I regret buying it", "quality", "negative"),
+    ("It works as expected", "quality", "neutral"),
+    ("Service is great and staff is helpful", "customer_service", "positive"),
+    ("Very poor service, totally useless", "customer_service", "negative"),
+    ("Customer support was okay", "customer_service", "neutral"),
+    ("Battery backup is excellent", "battery", "positive"),
+    ("Battery drains too quickly", "battery", "negative"),
+    ("Battery performance is average", "battery", "neutral"),
+    ("Camera quality is superb", "camera", "positive"),
+    ("Camera photos are very blurry", "camera", "negative"),
+    ("Camera is decent for the price", "camera", "neutral"),
+    ("Fast delivery and safe packaging", "delivery", "positive"),
+    ("Order arrived late and box was damaged", "delivery", "negative"),
+    ("Delivery was neither fast nor slow", "delivery", "neutral"),
+]
+
+df = pd.DataFrame(reviews, columns=["review", "aspect", "sentiment"])
+df = df.drop_duplicates(subset=["review"]).reset_index(drop=True)
+
+output_path = Path(__file__).resolve().parent / "hinglish_reviews.csv"
+df.to_csv(output_path, index=False, encoding="utf-8")
+
+print(f"Dataset created successfully: {output_path}")
+print(f"Total reviews: {len(df)}")
+print("\nSentiment distribution:")
+print(df["sentiment"].value_counts())
+print("\nAspect distribution:")
+print(df["aspect"].value_counts())
+print("\nFirst five reviews:")
+print(df.head().to_string(index=False))
+

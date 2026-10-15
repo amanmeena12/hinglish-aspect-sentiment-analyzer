@@ -1,0 +1,27 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Temporary test files
+test_batch.csv
+test_reviews.csv
+
+# Backup files
+app_backup.py
+app_backup_absa.py
+aspect_analyzer_backup.py
+
+# Local environment and secrets
+.env
+.streamlit/secrets.toml
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
